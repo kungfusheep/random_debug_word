@@ -32,7 +32,7 @@ To use the plugin you can set up a custom key binding for the command by going t
 }
 ```
 
-Two other commands exist; `"go_debug_print_word"` and `"print_word"` which print a single Printf statement containing the random word with no other parameters, and just prints the word by itself, respectively. 
+Three other commands exist; `"go_debug_print_word"`, `"remove_go_debug_print"` and `"print_word"` which print a single Printf statement containing the random word with no other parameters, deletes all occurences of inserted debug printf's in the current buffer and just prints the word by itself, respectively. 
 
 ## Example
 
