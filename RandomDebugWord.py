@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 import random
+import re
 
 # This is a simple sublime text plugin that generates a random word to be
 # used as a debug print statement in Go, but could and probably will be
@@ -24,7 +25,7 @@ syllables_2 = ['ka', 'ki', 'ku', 'ke', 'ko', 'ga', 'gi', 'gu', 'ge', 'go',
                        'wa', 'wo']
 
 syllables_3 = ['shi', 'tsu', 'chi', 'nai', 'nei', 'nou', 'sai', 'sei', 'sou',
-               'tai', 'tei', 'tou', 'hai', 'hei', 'hou', 'mai', 'mei', 'mou',
+               'tai', 'tei', 'tou', 'hai', 'hei', 'hou', 'mai', 'mei', 'mou', 
                'yai', 'you', 'rai', 'rei', 'rou', 'wai', 'wou',
                'jya', 'jyu', 'jyo', 'gya', 'gyu', 'gyo', 'nya', 'nyu', 'nyo',
                'hya', 'hyu', 'hyo', 'bya', 'byu', 'byo', 'pya', 'pyu', 'pyo',
@@ -32,7 +33,7 @@ syllables_3 = ['shi', 'tsu', 'chi', 'nai', 'nei', 'nou', 'sai', 'sei', 'sou',
 
 
 def get_word():
-    return random.choice(syllables_3) + random.choice(syllables_2)
+    return random.choice(syllables_3) + random.choice(syllables_2) 
 
 class GoDebugPrintCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -40,7 +41,7 @@ class GoDebugPrintCommand(sublime_plugin.TextCommand):
         word = get_word()
         self.view.run_command("insert_snippet", 
             { 
-                "contents": f'fmt.Printf("{word} %v \\n", $0)' 
+                "contents": f'fmt.Printf("{word}) %v \\n", $0)' 
             }
         )
 
@@ -50,7 +51,7 @@ class GoDebugPrintWordCommand(sublime_plugin.TextCommand):
         word = get_word()
         self.view.run_command("insert_snippet", 
             { 
-                "contents": f'fmt.Printf("{word} \\n")\n$0' 
+                "contents": f'fmt.Printf("{word}) \\n")\n$0' 
             }
         )
 
@@ -63,3 +64,20 @@ class DebugWordCommand(sublime_plugin.TextCommand):
                 "contents": f'{word} $0' 
             }
         )
+
+class RemoveGoDebugPrintCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        # The regular expression pattern to match "fmt.Printf(".....)" anywhere in the line
+        pattern = r'fmt.Printf\("[a-z]{5}\)'
+        
+        # Get all lines in the view
+        lines = self.view.lines(sublime.Region(0, self.view.size()))
+        
+        # Loop through each line in the view in reverse order
+        for line in reversed(lines):
+            # Get the content of the line
+            line_content = self.view.substr(line)
+            # If the line contains the pattern, erase it
+            if re.search(pattern, line_content):
+                self.view.erase(edit, self.view.full_line(line))
+
