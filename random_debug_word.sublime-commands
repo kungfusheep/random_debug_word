@@ -1,0 +1,18 @@
+[
+    {
+        "caption": "Insert Go Debug Printf Statement",
+        "command": "go_debug_print"
+    },
+    {
+        "caption": "Insert Go Debug Print Word Statement",
+        "command": "go_debug_print_word"
+    },
+    {
+        "caption": "Insert Debug Word",
+        "command": "debug_word"
+    },
+    {
+        "caption": "Remove All Go Debug Printf Statements",
+        "command": "remove_go_debug_print"
+    },
+]
